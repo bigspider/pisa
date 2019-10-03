@@ -58,6 +58,11 @@ If `eventAddress` and `topics` are omitted, the request is for a ''relay'' appoi
 - `eventAddress`: The address from which the trigger event is emitted.
 - `topics`: An array of up to 4 elements. Each element is either a topic that must match for the event to be considered a trigger, or `null` if the corresponding log entry (if any) is to obe ignored.
 
+## generateRequest and executeRequest
+
+The `pisaClient` object also exports lower level methods `generateRequest` and `executeRequest`.
+
+`generateRequest` has the same parameters as `generateAndExecuteRequest`, but returns a `SignedAppointmentRequest` instead of calling the PISA API. The returned signed appointment request can then be send to PISA by calling `executeRequest` with the signed appointment request.
 
 # Simple example with ethersjs
 --
