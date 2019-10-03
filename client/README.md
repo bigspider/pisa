@@ -66,9 +66,10 @@ The `pisaClient` object also exports lower level methods `generateRequest` and `
 
 `generateRequest` has the same parameters as `generateAndExecuteRequest`, but returns a `SignedAppointmentRequest` instead of calling the PISA API. The returned signed appointment request can then be send to PISA by calling `executeRequest` with the signed appointment request.
 
-# Simple example with ethersjs
---
-Appointments requests must be signed by the PISA customer. A callback that signs a digest with the customer's private key must be provided when generating an appointment request, in this example we use an ethersjs wallet to sign the digest
+# Simple example with ethers.js
+
+In this example we use an ethers.js wallet to sign the digest.
+
 ```
 const PISA_API_URL = "https://alpha.pisa.watch";
 const PISA_CONTRACT_ADDRESS = "0xA02C7260c0020343040A504Ef24252c120be60b9";
