@@ -1,4 +1,4 @@
-# PISA Client
+# PISA API Client
 
 A thin client for the PISA API running at https://alpha.pisa.watch. 
 
@@ -14,12 +14,52 @@ The API exports a single class called `PisaClient`, whose constructor takes two 
 const PISA_API_URL = "https://alpha.pisa.watch";
 const PISA_CONTRACT_ADDRESS = "0xA02C7260c0020343040A504Ef24252c120be60b9";
 
-const pisa = new PisaClient(PISA_API_URL, PISA_CONTRACT_ADDRESS);
+const pisaClient = new PisaClient(PISA_API_URL, PISA_CONTRACT_ADDRESS);
 ```
+
+The `pisaClient` object exposes a `generateAndExecuteRequest` method to call the PISA API and interpret the response.
 
 ## generateAndExecuteRequest
 
-Simple example with ethersjs
+```
+generateAndExecuteRequest(
+    signer: (digest: string) => Promise<string>,
+    customerAddress: string,
+    id: string,
+    nonce: number,
+    startBlock: number,
+    endBlock: number,
+    contractAddress: string,
+    data: string,
+    gasLimit: number,
+    challengePeriod: number,
+    eventAddress?: string,
+    topics?: (string | null)[]
+): Promise<AppointmentReceipt>
+```
+
+This method creates a requests for an appointment and calls the PISA endpoint. The return value is a Promise that resolves to an `AppointmentReceipt` if the request was successful, or is rejected in case of error.
+
+
+
+- `signer`: a callback function that is given a digest of the encoded appointment, and must return the customer's signature.
+- `customerAddress`: the checksummed address of the customer.
+- `id`: a unique id chosen by the customer.
+- `nonce`: a counter that can be incremented by the customer in order to replace a previous appointment with the given id.
+- `startBlock`: the block when the appointment starts.
+- `endBlock`: the block when the appointment ends.
+- `contractAddress`: the address of the external contract to which the data will be submitted by PISA
+- `data`: an ABI encoded function and arguments that will be executed at the contract address by PISA when the event specified by the appointment is observed.
+- `gasLimit`: the amount of gas that will be supplied when calling the external contract. The maximum value is 2 million.
+- `challengePeriod`: the number of blocks that PISA has to respond from the block height where an event is observed. It must be at least 100.
+
+If `eventAddress` and `topics` are omitted, the request is for a ''relay'' appointment and PISA wil respond without waiting for a trigger. Otherwise:
+
+- `eventAddress`: The address from which the trigger event is emitted.
+- `topics`: An array of up to 4 elements. Each element is either a topic that must match for the event to be considered a trigger, or `null` if the corresponding log entry (if any) is to obe ignored.
+
+
+# Simple example with ethersjs
 --
 Appointments requests must be signed by the PISA customer. A callback that signs a digest with the customer's private key must be provided when generating an appointment request, in this example we use an ethersjs wallet to sign the digest
 ```
